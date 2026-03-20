@@ -18,39 +18,38 @@ const LoginScreen = () => {
 
         try {
             const data = await loginService(email, password);
-
             login(data.token || data.access);
-
         } catch (e) {
             Alert.alert("Error de login", e.message);
         } finally {
             setLoading(false);
         }
     };
+
     return(
         <View style={styles.container}>
             <Text style={styles.title}>
                 ADSO Gestor de Tareas
             </Text>
             <TextInput
-            style={styles.input}
-            placeholder="Correo Electronico"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
+                style={styles.input}
+                placeholder="Correo Electrónico"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
             />
             <TextInput
-            style={styles.input}
-            placeholder="Contraseña"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
+                style={styles.input}
+                placeholder="Contraseña"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
             />
             {loading ? (
                 <ActivityIndicator size="large" color="#0000ff" />
-            ): (
-                <Button title="Iniciar Sesion" onPress={handleLogin} color="#0000ff"/>
+            ) : (
+                <Button title="Iniciar Sesión" onPress={handleLogin} color="#0000ff"/>
             )}
         </View>
     );
@@ -68,7 +67,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         textAlign: "center",
         marginBottom: 30,
-        colo: "#0000ff",
+        color: "#0000ff", // Corregido: era "colo"
     },
     input:{
         borderBottomWidth: 1,
