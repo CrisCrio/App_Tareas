@@ -11,26 +11,26 @@ const HomeScreen = ({navigation}) => {
                 <Text style={styles.welcome}>
                     Hola desarrollador
                 </Text>
-
                 <Text style={styles.sub}>
                     Bienvenido al panel principal
                 </Text>
             </View>
 
             <View style={styles.menuGrid}>
-                <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("Task")}>
-                    <Text style={styles.cardIcono}></Text>
+                <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("Tasks")}>
+                    <Text style={styles.cardIcono}>📝</Text>
                     <Text style={styles.cardText}>Gestionar tareas</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.card} onPress={logout}>
-                    <Text style={styles.cardIcono}></Text>
+                    <Text style={styles.cardIcono}>🚪</Text>
                     <Text style={styles.cardText}>Cerrar sesión</Text>
                 </TouchableOpacity>
             </View>
         </View>
     )
 }
+
 const styles = StyleSheet.create({
     container:{
         flex: 1,
@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
     cardText:{
         fontSize: 16,
         fontWeight: "bold",
+        textAlign: "center"
     }
 });
 
