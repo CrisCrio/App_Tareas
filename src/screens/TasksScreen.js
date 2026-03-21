@@ -41,7 +41,7 @@ const TasksScreen = ({navigation}) => {
 
     if (loading) {
         return (
-            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color="#0000ff" />
             </View>
         );

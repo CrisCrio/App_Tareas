@@ -1,42 +1,43 @@
 import React, { useContext } from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import { StatusBar } from "expo-status-bar";
+import { View, ActivityIndicator, StyleSheet } from "react-native";
+// Verifica que estas 3 rutas tengan el "./src/..."
+import { AuthContext, AuthProvider } from "./src/context/authContext";
+import LoginScreen from "./src/screens/LoginScreen"; // OJO: Si están en src/screens
+import TasksScreen from "./src/screens/TasksScreen";
 
-import { AuthContext, AuthProvider } from "./context/authContext";
+// Componente intermedio para manejar la logica de carga
+// Dentro de tu RootNavigator en App.js
 
-import LoginScreen from "./screens/LoginScreen";
-import HomeScreen from "./screens/HomeScreen";
-import TasksScreen from "./screens/TasksScreen";
+const RootNavigator = () => {
+    const {userToken, isLoading} = useContext(AuthContext);
 
-const Stack = createStackNavigator();
+    if(isLoading){
+      return(
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#0000ff"/>
+        </View>
+      );
+    }
 
-function AppNavigator() {
-    const { userToken, isLoading } = useContext(AuthContext);
-
-    if (isLoading) return null;
-
-    return (
-        <NavigationContainer>
-            <Stack.Navigator>
-                {userToken ? (
-                    <>
-                        <Stack.Screen name="Home" component={HomeScreen} />
-                        <Stack.Screen name="Tasks" component={TasksScreen} />
-                    </>
-                ) : (
-                    <Stack.Screen name="Login" component={LoginScreen} />
-                )}
-            </Stack.Navigator>
-            <StatusBar style="auto" />
-        </NavigationContainer>
-    );
-}
+    //logica de Navegacion
+    //Si existe userToken, mostramos la pantalla de tareas.
+    // si no existe, mostramos el login
+    return userToken ? <TasksScreen/> : <LoginScreen/>;
+};
 
 export default function App() {
-    return (
-        <AuthProvider>
-            <AppNavigator />
-        </AuthProvider>
-    );
+  return(
+      <AuthProvider>
+          <RootNavigator/>
+      </AuthProvider>
+  );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer:{
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f0f0f0"
+  },
+});

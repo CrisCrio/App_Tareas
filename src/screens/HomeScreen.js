@@ -1,81 +1,75 @@
-import React, {useState, useContext} from "react";
+import React, {useContext} from "react";
 import {View, Text, StyleSheet, TouchableOpacity, Image} from "react-native";
-import { AuthContext } from "../context/authContext";
+import {AuthContext} from "../context/authContext";
 
 const HomeScreen = ({navigation}) => {
     const {logout} = useContext(AuthContext);
-    
+
     return(
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.welcome}>
+                <Text style = {styles.welcome}>
                     Hola desarrollador
                 </Text>
-                <Text style={styles.sub}>
+                <Text style = {styles.sub}>
                     Bienvenido al panel principal
                 </Text>
             </View>
 
-            <View style={styles.menuGrid}>
-                <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("Tasks")}>
-                    <Text style={styles.cardIcono}>📝</Text>
+            <View style={styles.menuGrid} >
+                <TouchableOpacity style={styles.card} onPress={()=> navigation.navigate("Tasks")}>
+                    <Text style={styles.cardIcon}>📋</Text>
                     <Text style={styles.cardText}>Gestionar tareas</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.card} onPress={logout}>
-                    <Text style={styles.cardIcono}>🚪</Text>
+                    <Text style={styles.cardIcon}>🚪</Text>
                     <Text style={styles.cardText}>Cerrar sesión</Text>
                 </TouchableOpacity>
+
             </View>
         </View>
-    )
-}
+    );
+};
 
 const styles = StyleSheet.create({
-    container:{
-        flex: 1,
-        backgroundColor: "#f0f0f0",
-        padding: 20,
-    },
-    header:{
-        marginTop: 60,
-        marginBottom: 30,
-    },
     welcome:{
-        fontSize: 28,
+        fontSize: 24,
         fontWeight: "bold",
-        color: '#333'
+        marginTop: 40,
+        textAlign: "center"
     },
     sub:{
-        fontSize: 18,
+        fontSize: 16,
         color: "#666",
+        marginBottom: 20,
+        textAlign: "center"
     },
     menuGrid:{
         flexDirection: "row",
-        flexWrap: "wrap",
-        justifyContent: "space-between",
+        justifyContent: "space-around",
+        marginTop: 30
     },
     card:{
-        width: "48%",
-        backgroundColor: "#fff",
+        width: "40%",
+        height: 150,
+        backgroundColor: "#f0f0f0",
         borderRadius: 10,
-        padding: 20,
-        marginBottom: 20,
+        justifyContent: "center",
         alignItems: "center",
         shadowColor: "#000",
         shadowOffset:{width: 0, height: 2},
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 4,
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 5
     },
-    cardIcono:{
+    cardIcon:{
         fontSize: 40,
-        marginBottom: 10,
+        marginBottom: 10
     },
     cardText:{
         fontSize: 16,
-        fontWeight: "bold",
-        textAlign: "center"
+        fontWeight: "bold"
     }
 });
 
