@@ -1,11 +1,11 @@
-import React, { createContext, useState, useEffect } from "react";
+import React,{createContext, useState, useEffect} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({children}) => {
     const [userToken, setUserToken] = useState(null);
-    const [isLoading, setLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
 
     const login = async (token) => {
         setUserToken(token);
@@ -18,22 +18,22 @@ export const AuthProvider = ({ children }) => {
     };
 
     const isLoggedIn = async () => {
-        try {
+        try{
             const token = await AsyncStorage.getItem('userToken');
             setUserToken(token);
         } catch (e) {
-            console.log("Error en persistencia:", e);
+            console.log("Error en persistencia: ", e)
+        }finally {
+            setIsLoading(false);
         }
-        setLoading(false);
     };
-
-    useEffect(() => {
+    useEffect(()=>{
         isLoggedIn();
-    }, []);
+    }, [])
 
-    return (
-        <AuthContext.Provider value={{ login, logout, userToken, isLoading }}>
+    return(
+        <AuthContext.Provider value={{login, logout, userToken, isLoading}}>
             {children}
         </AuthContext.Provider>
-    );
-};
+    )
+}

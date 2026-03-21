@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const BASE_URL = "http://10.0.2.2:8000/api"; 
+const BASE_URL = "http://192.168.1.6:8000/api";
 // Si usas celular físico: http://TU_IP_LOCAL:8000/api
 
 export const loginService = async (email, password) => {
