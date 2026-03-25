@@ -3,31 +3,67 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const AuthContext = createContext();
 
+// ⚠️ Sin /api al final porque ya está en la URL de perfil
+const BASE_URL = "http://192.168.1.6:8000";
+
 export const AuthProvider = ({ children }) => {
     const [userToken, setUserToken] = useState(null);
-    const [userData, setUserData] = useState(null); // 👈 NUEVO
     const [isLoading, setIsLoading] = useState(true);
+    const [userProfile, setUserProfile] = useState(null); // ✅ faltaba esto
 
-    const login = async (token, user) => { // 👈 ahora recibe user también
+    const login = async (token) => {
         setUserToken(token);
-        setUserData(user);
         await AsyncStorage.setItem('userToken', token);
-        await AsyncStorage.setItem('userData', JSON.stringify(user)); // 👈 persiste
+
+        try {
+            const response = await fetch(`${BASE_URL}/api/perfil/`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const data = await response.json();
+            setUserProfile({
+                email: data.email || "Sin email",
+                rol: data.rol || "aprendiz",
+                foto_perfil: data.foto_perfil || null,
+            });
+        } catch (e) {
+            try {
+                const base64Payload = token.split('.')[1];
+                const payload = JSON.parse(atob(base64Payload));
+                setUserProfile({ email: payload.email || "Sin email", rol: "aprendiz", foto_perfil: null });
+            } catch {
+                setUserProfile({ email: "Sin email", rol: "aprendiz", foto_perfil: null });
+            }
+        }
     };
 
     const logout = async () => {
         setUserToken(null);
-        setUserData(null);
+        setUserProfile(null); // ✅ limpia el perfil al cerrar sesión
         await AsyncStorage.removeItem('userToken');
-        await AsyncStorage.removeItem('userData');
     };
 
     const isLoggedIn = async () => {
         try {
             const token = await AsyncStorage.getItem('userToken');
-            const user = await AsyncStorage.getItem('userData');
-            setUserToken(token);
-            setUserData(user ? JSON.parse(user) : null);
+            if (token) {
+                setUserToken(token);
+                // ✅ Restaura el perfil si ya había sesión guardada
+                try {
+                    const response = await fetch(`${BASE_URL}/api/perfil/`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    const data = await response.json();
+                    setUserProfile({
+                        email: data.email || "Sin email",
+                        rol: data.rol || "aprendiz",
+                        foto_perfil: data.foto_perfil || null,
+                    });
+                } catch {
+                    const base64Payload = token.split('.')[1];
+                    const payload = JSON.parse(atob(base64Payload));
+                    setUserProfile({ email: payload.email || "Sin email", rol: "aprendiz", foto_perfil: null });
+                }
+            }
         } catch (e) {
             console.log("Error en persistencia: ", e);
         } finally {
@@ -36,11 +72,12 @@ export const AuthProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        isLoggedIn(); // ✅ nombre correcto
+        isLoggedIn();
     }, []);
 
     return (
-        <AuthContext.Provider value={{ login, logout, userToken, userData, isLoading }}>
+        // ✅ ahora expone userProfile y setUserProfile
+        <AuthContext.Provider value={{ login, logout, userToken, isLoading, userProfile, setUserProfile }}>
             {children}
         </AuthContext.Provider>
     );
